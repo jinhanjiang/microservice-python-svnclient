@@ -1,8 +1,15 @@
 #!/bin/bash
-export PYTHON_HOME=/usr/bin/python
-export PATH=$PATH:$PYTHON_HOME/bin
 
 WORKDIR=$(cd $(dirname $0); pwd)
+
+# 在.env中可重定义export PYTHON_HOME=/usr/local/python
+if [ -f ${WORKDIR}/.env ]; then
+    source ${WORKDIR}/.env
+fi
+if [ -z ${PYTHON_HOME} ]; then
+    export PYTHON_HOME=/usr/local/python
+fi
+export PATH=$PATH:$PYTHON_HOME/bin
 
 #这里可替换为你自己的执行程序，其他代码无需更改
 

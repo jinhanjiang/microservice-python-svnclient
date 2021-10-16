@@ -19,6 +19,7 @@ import hashlib
 from bottle import request, redirect
 
 
+# 以下定义的类
 class Message(Exception):
     def __init__(self, message, code=0):
         self.message = message
@@ -26,6 +27,16 @@ class Message(Exception):
     def __str__(self):
         return '[%d]%s'%(self.code, self.message)
 
+class Const:
+    def __setattr__(self, name, value):
+        if name in self.__dict__.keys():
+            raise Message("Can't rebind const (%s)"%name, 1021)
+        if not key.isupper():
+            raise Message("Const variable must be combined with upper letters:'%s"%name, 1022)
+        self.__dict__[name] = value
+
+
+# 以下定义的函数
 def json_encode(jsonobj):
     return json.dumps(jsonobj, sort_keys=True, separators=(',', ':'))
 

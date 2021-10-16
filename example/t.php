@@ -3,6 +3,18 @@ define('API_KEY', '10000');
 define('API_TOKEN', '513b60e222800340e4d7a12f2454794e');
 
 /**
+ * 数组键值排序
+ */
+function tksort(&$array) {
+  	ksort($array);
+  	foreach(array_keys($array) as $k) {
+    	if(gettype($array[$k])=="array") {
+      		tksort($array[$k]);
+      	}
+    }
+}
+
+/**
  * 调用svn client微服务接口
  */
 function svnClientCall($api, $params=array())
@@ -13,8 +25,8 @@ function svnClientCall($api, $params=array())
 	    'timestamp'=>strval(time()),
 	    'version'=>'1.0',
 	);
-	ksort($authInfo); ksort($params);
-	$authInfo['sign'] = hash('sha256', json_encode($params).'|'.json_encode($authInfo).'|'.API_TOKEN);
+	ksort($authInfo); tksort($params);
+	$authInfo['sign'] = hash('sha256', strval(stripslashes(json_encode($params)).'|'.json_encode($authInfo).'|'.API_TOKEN));
 	$authInfo['auth-fields'] = implode(',', array_keys($authInfo));
 	$authInfo['debug'] = true;
 
